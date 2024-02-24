@@ -76,7 +76,7 @@ class UserManagement:
             message_admin = """
             1. Add new user : add_user <username>
             2. View all users : view_users
-            3. Create event : create_event <event_name> <description> <start time> <duration "HH:MM"> <reminder_time_minutes>
+            3. Create event : create_event <event_name> <description> <start time YY-MM-DD> <duration "HH:MM"> <reminder_time_minutes>
             4. View events : view_my_events
             5. Share event : share_event <event_id> <username_to_share> <permission>
             6. Update event : update_event <event_id> <field_to_update> <new_value>
@@ -86,7 +86,7 @@ class UserManagement:
             print(message_admin)
         else: 
             message_member = """
-            3. Create event : create_event <event_name> <description> <start time> <duration "HH:MM"> <reminder_time_minutes>
+            3. Create event : create_event <event_name> <description> <start time YY-MM-DD> <duration "HH:MM"> <reminder_time_minutes>
             4. View events : view_my_events
             5. Share event : share_event <event_id> <username_to_share> <permission>
             6. Update event : update_event <event_id> <field_to_update> <new_value>

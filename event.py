@@ -1,10 +1,11 @@
+from datetime import datetime, time, timedelta
 class EventManagement:
     id_event_counter = 4
     def __init__(self):
         self.events_repository = {
-            '1': {'id': 1, 'title': 'Event 1', 'description': 'Description 1', 'time': '10:00', 'duration': 60, 'reminder': 1, 'owner': 'juan', 'shared_users': [{'maria': {'permission': 'view', 'response': 'pending'}},{'pedro': {'permission': 'view', 'response': 'pending'}}]},
-            '2': {'id': 2, 'title': 'Event 2', 'description': 'Description 2', 'time': '11:00', 'duration': 30, 'reminder': 1, 'owner': 'maria','shared_users': [{'juan': {'permission': 'view', 'response': 'pending'}}]},
-            '3': {'id': 3, 'title': 'Event 3', 'description': 'Description 3', 'time': '12:00', 'duration': 45, 'reminder': 1, 'owner': 'pedro','shared_users': [{'maria': {'permission': 'view', 'response': 'pending'}}]}
+            1: {'id': 1, 'title': 'Event 1', 'description': 'Description 1', 'time': '10:00', 'duration': 60, 'reminder': 1, 'owner': 'juan', 'shared_users': [{'maria': {'permission': 'edit', 'response': 'pending'}},{'pedro': {'permission': 'view', 'response': 'pending'}}]},
+            2: {'id': 2, 'title': 'Event 2', 'description': 'Description 2', 'time': '11:00', 'duration': 30, 'reminder': 1, 'owner': 'maria','shared_users': [{'juan': {'permission': 'view', 'response': 'pending'}}]},
+            3: {'id': 3, 'title': 'Event 3', 'description': 'Description 3', 'time': '12:00', 'duration': 45, 'reminder': 1, 'owner': 'pedro','shared_users': [{'maria': {'permission': 'view', 'response': 'pending'}}]}
             }  # Dictionary to store events
         
     def create_event(self, title, description, time, duration, reminder,owner):
@@ -15,8 +16,8 @@ class EventManagement:
             'id': event_id,
             'title': title,
             'description': description,
-            'time': time,
-            'duration': duration,
+            'time': datetime.strptime(time,"%Y-%m-%d").date(),
+            'duration': datetime.strptime(duration,"%H:%M").time(),
             'owner': owner,
             'reminder': reminder,
             'shared_users': []
@@ -27,8 +28,25 @@ class EventManagement:
         except Exception as e:
             print(f"Error creating event: {e}")
     
-    def update_event(self, event_id, field_to_update, new_value):
-        if event_id in self.events_repository:
+    def update_event(self, event_id, field_to_update, new_value, username):
+        owner_events = [event for event in self.events_repository.values() if event['owner'] == username]
+        id_valid = list({owner_events['id'] for owner_events in owner_events})
+        shared_events = [
+            event for event in self.events_repository.values()
+            if username in [user for user_dict in event.get('shared_users', []) for user in user_dict.keys()] 
+        ]
+        
+        for event in shared_events:
+            for user_dict in event.get('shared_users', []):
+                try:
+                    if user_dict[username].get('permission') == 'edit':
+                        id_valid.append(event['id'])
+                except KeyError:
+                    pass
+                
+        print(f'You can update these events ID: {id_valid}')      
+        event_id = int(event_id)
+        if event_id in id_valid:
             if field_to_update in self.events_repository[event_id]:
                 self.events_repository[event_id][field_to_update] = new_value
                 print(f"Event '{event_id}' updated successfully.")
@@ -37,15 +55,49 @@ class EventManagement:
         else:
             print(f"Event '{event_id}' not found.")
     
-    def delete_event(self, event_id):
-        if event_id in self.events_repository:
+    def delete_event(self, event_id, username):
+        owner_events = [event for event in self.events_repository.values() if event['owner'] == username]
+        id_valid = list({owner_events['id'] for owner_events in owner_events})
+        shared_events = [
+            event for event in self.events_repository.values()
+            if username in [user for user_dict in event.get('shared_users', []) for user in user_dict.keys()] 
+        ]
+        
+        for event in shared_events:
+            for user_dict in event.get('shared_users', []):
+                try:
+                    if user_dict[username].get('permission') == 'edit':
+                        id_valid.append(event['id'])
+                except KeyError:
+                    pass
+                
+        print(f'You can delete these events ID: {id_valid}')      
+        event_id = int(event_id)
+        if event_id in id_valid:
             del self.events_repository[event_id]
             print(f"Event '{event_id}' deleted successfully.")
         else:
             print(f"Event '{event_id}' not found.")
     
     def add_shared_user(self, event_id, username, permission):
-        if event_id not in self.events_repository:
+        owner_events = [event for event in self.events_repository.values() if event['owner'] == username]
+        id_valid = list({owner_events['id'] for owner_events in owner_events})
+        shared_events = [
+            event for event in self.events_repository.values()
+            if username in [user for user_dict in event.get('shared_users', []) for user in user_dict.keys()] 
+        ]
+        
+        for event in shared_events:
+            for user_dict in event.get('shared_users', []):
+                try:
+                    if user_dict[username].get('permission') == 'edit':
+                        id_valid.append(event['id'])
+                except KeyError:
+                    pass
+        print(f'You can add a new user in these events ID: {id_valid}')      
+        event_id = int(event_id) 
+        
+        if event_id not in id_valid:
             print(f"Error: Event with ID {event_id} not found.")
             return
 

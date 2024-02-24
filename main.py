@@ -23,10 +23,10 @@ class EventScheduler(cmd.Cmd):
         
     def do_update_event(self, line):
         args = line.split()
-        self.event_management.update_event(args[0], args[1], args[2])
+        self.event_management.update_event(args[0], args[1], args[2], self.current_user)
     
     def do_delete_event(self, line):
-        self.event_management.delete_event(line)
+        self.event_management.delete_event(line,self.current_user)
     def do_view_my_events(self,line):
         self.event_management.view_owner_events(self.current_user)
         
