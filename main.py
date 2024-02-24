@@ -1,15 +1,23 @@
 import cmd
 from user_management import UserManagement
 from event import EventManagement
+from notification import NotificationManagement
 
 class EventScheduler(cmd.Cmd):
     def __init__(self):
         super().__init__()
         self.user_management = UserManagement()
         self.event_management = EventManagement()
+        self.notification_management = NotificationManagement(self.event_management, self.user_management)
         self.users = self.user_management.users
         self.current_user, self.is_admin = self.user_management.check_user()
         self.prompt = ">> :"
+        
+        # Start the notification manager in a separate thread
+        import threading
+        notification_thread = threading.Thread(target=self.notification_management.check_upcoming_notifications)
+        notification_thread.daemon = True  # Daemonize the thread so it terminates when the main program exits
+        notification_thread.start()
 
     def do_log_out(self, line):
         print("Logging out...")

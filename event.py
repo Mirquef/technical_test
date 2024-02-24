@@ -3,9 +3,9 @@ class EventManagement:
     id_event_counter = 4
     def __init__(self):
         self.events_repository = {
-            1: {'id': 1, 'title': 'Event 1', 'description': 'Description 1', 'time': '10:00', 'duration': 60, 'reminder': 1, 'owner': 'juan', 'shared_users': [{'maria': {'permission': 'edit', 'response': 'pending'}},{'pedro': {'permission': 'view', 'response': 'pending'}}]},
-            2: {'id': 2, 'title': 'Event 2', 'description': 'Description 2', 'time': '11:00', 'duration': 30, 'reminder': 1, 'owner': 'maria','shared_users': [{'juan': {'permission': 'view', 'response': 'pending'}}]},
-            3: {'id': 3, 'title': 'Event 3', 'description': 'Description 3', 'time': '12:00', 'duration': 45, 'reminder': 1, 'owner': 'pedro','shared_users': [{'maria': {'permission': 'view', 'response': 'pending'}}]}
+            1: {'id': 1, 'title': 'Event 1', 'description': 'Description 1', 'time': '2024-02-24 12:17', 'duration': "00:30", 'reminder': 1, 'owner': 'juan', 'shared_users': [{'maria': {'permission': 'edit', 'response': 'pending'}},{'pedro': {'permission': 'view', 'response': 'pending'}}]},
+            2: {'id': 2, 'title': 'Event 2', 'description': 'Description 2', 'time': '2024-02-24 12:18', 'duration': "00:15", 'reminder': 1, 'owner': 'maria','shared_users': [{'juan': {'permission': 'view', 'response': 'pending'}}]},
+            3: {'id': 3, 'title': 'Event 3', 'description': 'Description 3', 'time': '2024-02-24 12:19', 'duration': "00:45", 'reminder': 1, 'owner': 'pedro','shared_users': [{'maria': {'permission': 'view', 'response': 'pending'}}]}
             }  # Dictionary to store events
         
     def create_event(self, title, description, time, duration, reminder,owner):
@@ -16,10 +16,10 @@ class EventManagement:
             'id': event_id,
             'title': title,
             'description': description,
-            'time': datetime.strptime(time,"%Y-%m-%d").date(),
+            'time': datetime.strptime(time,"%Y-%m-%d %H:%M").date(),
             'duration': datetime.strptime(duration,"%H:%M").time(),
             'owner': owner,
-            'reminder': reminder,
+            'reminder': timedelta(minutes=reminder),
             'shared_users': []
         }
         try:
@@ -138,3 +138,6 @@ class EventManagement:
                         pass
         else:
             print(f"No events found for the user '{owner}'.")
+    
+    def get_all_events(self):
+        return self.events_repository.values()
