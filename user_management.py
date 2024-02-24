@@ -3,7 +3,9 @@ import getpass
 
 class UserManagement:
     def __init__(self):
-        self.users = {'juan': {'password': '12345', 'is_admin': True}}
+        self.users = {'juan': {'password': '1', 'is_admin': True},
+                      'maria': {'password': '2', 'is_admin': False},
+                      'pedro': {'password': '3', 'is_admin': False}}
         self.events = {}
         self.logged_user = None
         self.is_admin_logged_user = None
@@ -17,6 +19,9 @@ class UserManagement:
             username = input("Enter username: ").strip()
             if username in self.users:
                 self.log_in(username)
+                self.logged_user = username
+                self.is_admin_logged_user = self.users[username]['is_admin']
+                return self.logged_user, self.is_admin_logged_user
             else:
                 createaccount = input("User not found. Do you want to create an account? (Yes/No): ")
                 if createaccount.lower() == 'yes':
@@ -36,9 +41,9 @@ class UserManagement:
         password = getpass.getpass("Enter password: ")
         if password == self.users[username]['password']:
             print(f"Logged in as {username} {'(Admin)' if self.users[username]['is_admin'] else '(Member)'}.")
-            self.logged_user = username
-            self.is_admin_logged_user = self.users[username]['is_admin']
+
             self.print_user_menu(username)
+            
         else:
             print("Incorrect password. Please try again.")
             self.log_in(username)
@@ -64,19 +69,28 @@ class UserManagement:
             print("Usage: add_user <username>")
             
     def get_logged_user(self):
-        return self.logged_user, self.is_admin_logged_user 
-    
+        return self.logged_user
     def print_user_menu(self,username):
         
         if self.users[username]['is_admin']:
             message_admin = """
             1. Add new user : add_user <username>
             2. View all users : view_users
-            3. Create event : create_event <event_name> <date> <time>
+            3. Create event : create_event <event_name> <description> <start time> <duration "HH:MM"> <reminder_time_minutes>
+            4. View events : view_my_events
+            5. Share event : share_event <event_id> <username_to_share> <permission>
+            6. Update event : update_event <event_id> <field_to_update> <new_value>
+            7. Delete event : delete_event <event_id>
+            8. Log out: log_out
             """
             print(message_admin)
         else: 
             message_member = """
-            1. Create event : create_event <event_name> <date> <time>
+            3. Create event : create_event <event_name> <description> <start time> <duration "HH:MM"> <reminder_time_minutes>
+            4. View events : view_my_events
+            5. Share event : share_event <event_id> <username_to_share> <permission>
+            6. Update event : update_event <event_id> <field_to_update> <new_value>
+            7. Delete event : delete_event <event_id>
+            8. Log out: log_out
             """
             print(message_member)

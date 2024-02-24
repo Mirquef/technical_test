@@ -1,26 +1,39 @@
 import cmd
 from user_management import UserManagement
-
+from event import EventManagement
 
 class EventScheduler(cmd.Cmd):
     def __init__(self):
         super().__init__()
         self.user_management = UserManagement()
+        self.event_management = EventManagement()
         self.users = self.user_management.users
-        
+        self.current_user, self.is_admin = self.user_management.check_user()
         self.prompt = ">> :"
-        
-        self.user_management.check_user()
-        
-        current_user, is_admin = self.user_management.get_logged_user()
-        is_admin = self.users[current_user]['is_admin']
 
-                # is_admin = input(f"Is '{username}' an admin? (Yes/No): ")
-                
-                # if is_admin.lower() == "yes":
-                #     self.users[username]['is_admin'] = True
-                # else:
-                #     self.users[username]['is_admin'] = False
+    def do_log_out(self, line):
+        print("Logging out...")
+        self.current_user = None
+        self.current_user, self.is_admin = self.user_management.check_user()
+    
+    def do_create_event(self, line):
+        args = line.split()
+        owner = self.current_user
+        self.event_management.create_event(args[0], args[1], args[2], args[3],args[4],owner)
+        
+    def do_update_event(self, line):
+        args = line.split()
+        self.event_management.update_event(args[0], args[1], args[2])
+    
+    def do_delete_event(self, line):
+        self.event_management.delete_event(line)
+    def do_view_my_events(self,line):
+        self.event_management.view_owner_events(self.current_user)
+        
+    def do_share_event(self, line):
+        args = line.split()
+        self.event_management.add_shared_user(args[0], args[1], args[2])
+    
     def do_view_users(self, line):
         """
         View all users.
