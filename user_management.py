@@ -3,6 +3,15 @@ import getpass
 
 class UserManagement:
     def __init__(self):
+        """
+        Initialize the EventScheduler class.
+
+        Attributes:
+        - users (dict): Dictionary to store user information.
+        - events (dict): Dictionary to store event information.
+        - logged_user (str): Username of the logged-in user.
+        - is_admin_logged_user (bool): Admin status of the logged-in user.
+        """
         self.users = {'juan': {'password': '1', 'is_admin': True},
                       'maria': {'password': '2', 'is_admin': False},
                       'pedro': {'password': '3', 'is_admin': False}}
@@ -12,7 +21,12 @@ class UserManagement:
     
     def check_user(self):
         """
-        Check if the user exists in our database.
+        Check if the user exists in the database and handle user login or account creation.
+
+        Returns:
+        tuple: Tuple containing the logged-in username and admin status if successful, otherwise returns True.
+
+        This method prompts the user to log in or create an account and handles the respective actions.
         """
         newuser = input("Do you want to log in? (Yes/No): ").strip()
         if newuser.lower() == 'yes':
@@ -29,6 +43,7 @@ class UserManagement:
                     self.create_account(username)
                 else:
                     print("Exiting...")
+                    return True
         else:
             print("Create an account ")
             username = input("Enter username: ").strip()
@@ -37,7 +52,15 @@ class UserManagement:
         
     def log_in(self, username):
         """
-        Log in to an existing user. Usage: log_in <username>
+        Log in to an existing user.
+
+        Parameters:
+        - username (str): Username of the user attempting to log in.
+
+        Returns:
+        None
+
+        This method prompts the user for a password and logs them in if the password is correct.
         """
         password = getpass.getpass("Enter password: ")
         if password == self.users[username]['password']:
@@ -52,7 +75,15 @@ class UserManagement:
         
     def create_account(self,username):
         """
-        Add a new user by using this funtion: add_user <username>
+        Create a new user account.
+
+        Parameters:
+        - username (str): Username of the user to be created.
+
+        Returns:
+        None
+
+        This method prompts the user for a password and creates a new user account.
         """
         if username:
             if username in self.users:
@@ -70,10 +101,26 @@ class UserManagement:
             print("Usage: add_user <username>")
             
     def get_logged_user(self):
+        """
+        Get the username of the currently logged-in user.
+
+        Returns:
+        str: Username of the logged-in user.
+        """
         username = self.logged_user
         return username
     def print_user_menu(self,username):
-        
+        """
+        Print the menu options based on user roles (admin or member).
+
+        Parameters:
+        - username (str): Username of the logged-in user.
+
+        Returns:
+        None
+
+        This method prints the menu options available to the user based on their admin status.
+        """
         if self.users[username]['is_admin']:
             message_admin = """
             1. Add new user : add_user <username>
