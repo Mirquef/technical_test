@@ -10,6 +10,7 @@ Features
 *   **User Roles:** Admin and Member roles with specific permissions.
 *   **Background Notifications:** Receive notifications for upcoming events.
 *   **Role Management:** Admins can view all users and promote users to admin.
+*   **Custom Views:** The user logged into the app can only see his own events or those shared with him
 
 Getting Started
 ---------------
